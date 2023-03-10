@@ -1,0 +1,4 @@
+<resources>
+    <bool name="isTablet">true</bool>
+    <integer name="gallery_columns">4</integer>
+</resources>

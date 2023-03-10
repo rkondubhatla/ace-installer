@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">AceInstaller</string>
+    <string-array name="packageNames">
+        <item name="0">com.camerasideas.instashot</item>
+        <item name="1">org.scratchjr.android</item>
+        <item name="2">com.lenovo.anyshare.gps</item>
+        <item name="3">cn.wps.moffice_eng</item>
+        <item name="4">com.kotobee.readerapp</item>
+        <item name="5">com.sonymobile.sketch</item>
+        <item name="6">com.qihoo.security</item>
+        <item name="7">com.estrongs.android.pop</item>
+        <item name="8">air.fourdWhiteboard.debug</item>
+        <item name="9">com.erudex.eduapp.mauritius</item>
+    </string-array>
+</resources>

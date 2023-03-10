@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id = "@+id/select_all"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/apkName"
+            android:text="Select All Files"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="8dp"
+            android:gravity="center_vertical"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/chkSelected"
+            android:layout_toStartOf="@+id/chkSelected" />
+
+        <CheckBox android:id="@+id/chkSelected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:paddingRight="8dp"
+            android:clickable="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp" >
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/chooseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Folder"
+        android:textSize="20sp"
+        android:visibility="gone"
+        android:layout_margin="16dp"
+        android:gravity="center"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/apk_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/installSelected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Install Selected"
+        android:onClick="installSelected"
+        android:visibility="gone"
+        android:background="#00796B"
+        android:textColor="#FFFFFF"/>
+</LinearLayout>
