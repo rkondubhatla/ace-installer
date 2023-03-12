@@ -34,7 +34,7 @@ public class CopyActivity extends AppCompatActivity {
     private static Button copyButton;
     private Context mContext;
     private File dataRoot;
-    private File apkRoot;
+    //private File apkRoot;
 
     private ArrayList<File> fileList = new ArrayList<File>();
     private ArrayList<File> apkFileList = new ArrayList<File>();
@@ -82,7 +82,7 @@ public class CopyActivity extends AppCompatActivity {
         mProgressBar.setMax(MAX_PROGRESS);
 
         dataRoot = new File(Utils.getStoragepathString(CopyActivity.this).concat("/AceInstaller/Erudex"));
-        apkRoot = new File(Utils.getStoragepathString(CopyActivity.this).concat("/AceInstaller/apps"));
+       // apkRoot = new File(Utils.getStoragepathString(CopyActivity.this).concat("/AceInstaller/apps"));
 
         if(!dataRoot.isDirectory()) {
             txtMessage.setVisibility(View.GONE);
@@ -192,8 +192,8 @@ public class CopyActivity extends AppCompatActivity {
             int progress = ((Integer[])params)[0];
 
             fileList = Utils.getfiles(dataRoot);
-            apkFileList = Utils.getApkFiles(apkRoot);
-            total_file_count = Utils.getFileCount(dataRoot) + Utils.getFileCount(apkRoot);
+           // apkFileList = Utils.getApkFiles(apkRoot);
+            total_file_count = Utils.getFileCount(dataRoot);
 
             int i = 0;
             do {
@@ -213,7 +213,7 @@ public class CopyActivity extends AppCompatActivity {
                 i++;
             } while (i < fileList.size());
 
-            int a = 0;
+        /*    int a = 0;
             do {
                 String inputPath = apkRoot.toString()+"/";
                 String fileName = apkFileList.get(a).getName();
@@ -229,7 +229,7 @@ public class CopyActivity extends AppCompatActivity {
                 progress = (a * 100) / apkFileList.size();
                 publishProgress(progress);
                 a++;
-            } while (a < apkFileList.size());
+            } while (a < apkFileList.size());*/
 
             return progress;
         }

@@ -13,12 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.content.FileProvider;
-import android.support.v4.content.pm.ShortcutInfoCompat;
-import android.support.v4.content.pm.ShortcutManagerCompat;
-import android.support.v4.graphics.drawable.IconCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -26,6 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.sk.aceinstaller2.util.Utils;
 
@@ -95,7 +96,7 @@ public class InstallerActivity extends Activity {
     private void showApkList() {
 
       //  root = Environment.getExternalStoragePublicDirectory("AceInstaller/Erudex");
-        root = Environment.getExternalStoragePublicDirectory(Environment.);
+        root = new File(Utils.getStoragepathString(InstallerActivity.this).concat("/AceInstaller/apps"));
         fileList = Utils.getApkFiles(root);
 
         if(fileList.size() < 1) {
@@ -159,7 +160,7 @@ public class InstallerActivity extends Activity {
         List<ApkFile> apkList = ((ApkViewDataAdapter) mAdapter).getSelectedApkList();
 
         for (int i = 0; i < apkList.size(); i++) {
-            File directory = Environment.getExternalStoragePublicDirectory("ErudexApps");
+            File directory = new File(Utils.getStoragepathString(InstallerActivity.this).concat("/AceInstaller/apps"));;
             File file = new File(directory, apkList.get(i).getName());
             Uri fileUri = Uri.fromFile(file);
 
