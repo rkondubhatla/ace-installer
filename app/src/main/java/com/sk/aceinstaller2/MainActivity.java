@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -13,11 +15,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.sk.aceinstaller2.util.Utils;
+
+import java.io.File;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private static Button appListButton;
     private Context mContext;
     final static int APP_STORAGE_ACCESS_REQUEST_CODE = 501;
-
+    final static int APP_UNKNOWN_SERVICES_ACCESS_REQUEST_CODE = 502;
     private int STORAGE_PERMISSION_CODE=23;
     SharedPreferences sharedpreferences;
     public static final String shownPermissionPage = "shownPermissionPage";
@@ -64,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
         installerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openInstaller(v);
+                Uri uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID);
+                startActivityForResult(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,uri),APP_UNKNOWN_SERVICES_ACCESS_REQUEST_CODE);
+           //     openInstaller(v);
             }
         });
 
@@ -84,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     public void openInstaller(View view)
     {
@@ -118,10 +130,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == APP_STORAGE_ACCESS_REQUEST_CODE) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("shownPermissionPage", true);
                 editor.commit();
+            }
+        } else if (requestCode == APP_UNKNOWN_SERVICES_ACCESS_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                {
+                    Intent intent = new Intent(getApplicationContext(), InstallerActivity.class);
+                    startActivity(intent);
+                }
+            }
+            else{
+                Toast.makeText(MainActivity.this,"Need to enable the unknown sources installation",Toast.LENGTH_LONG).show();
             }
         }
     }

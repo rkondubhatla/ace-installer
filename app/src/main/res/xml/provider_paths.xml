@@ -14,7 +14,9 @@
         name="external_cache_path"
         path="." />
     <root-path name="root" path="." />
+    <external-path name="external_files" path="."/>
     <external-path name="my_images" path="AceInstaller" />
-
+    <external-files-path name="name" path="path"
+        />
 
 </paths>

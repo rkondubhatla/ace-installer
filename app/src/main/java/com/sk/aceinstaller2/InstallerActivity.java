@@ -1,5 +1,6 @@
 package com.sk.aceinstaller2;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,11 +9,13 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -31,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sk.aceinstaller2.util.Utils;
 
 import java.io.File;
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,11 +71,15 @@ public class InstallerActivity extends Activity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         }
 
+
         view = (LinearLayout) findViewById(R.id.view);
         select_all = (RelativeLayout) findViewById(R.id.select_all);
         chooseFolder = (Button) findViewById(R.id.chooseButton);
         installSelected = (Button) findViewById(R.id.installSelected);
         selectAll = (CheckBox) findViewById(R.id.chkSelected);
+
+
+
 
         selectAll.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -139,7 +147,9 @@ public class InstallerActivity extends Activity {
             mAdapter = new ApkViewDataAdapter(apkList);
             mRecyclerView.setAdapter(mAdapter);
             installSelected.setVisibility(View.VISIBLE);
+
         }
+
     }
 
     private boolean appInstalledOrNot(String uri) {
@@ -155,7 +165,7 @@ public class InstallerActivity extends Activity {
 
     public void installSelected(View view)
     {
-        installSelected.setEnabled(false);
+       // installSelected.setEnabled(false);
 
         List<ApkFile> apkList = ((ApkViewDataAdapter) mAdapter).getSelectedApkList();
 
@@ -163,19 +173,22 @@ public class InstallerActivity extends Activity {
             File directory = new File(Utils.getStoragepathString(InstallerActivity.this).concat("/AceInstaller/apps"));;
             File file = new File(directory, apkList.get(i).getName());
             Uri fileUri = Uri.fromFile(file);
-
-            if (Build.VERSION.SDK_INT >= 24) {
-                fileUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);
+            Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+            List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                grantUriPermission(packageName, fileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
 
-            Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+            if (Build.VERSION.SDK_INT >= 24) {
+                fileUri = FileProvider.getUriForFile(this, "com.sk.aceinstaller2" + ".provider", file);
+            }
             intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
             intent.setDataAndType(fileUri, "application/vnd.android.package-archive");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //dont forget add this line
             startActivity(intent);
         }
-
         // Make sure you only run addShortcut() once, not to create duplicate shortcuts.
         if(!appSettings.getBoolean("apps_shortcut", false)) {
             addAppsShortcut(mContext);
