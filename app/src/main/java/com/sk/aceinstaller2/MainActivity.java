@@ -38,7 +38,10 @@ public class MainActivity extends AppCompatActivity {
     private int STORAGE_PERMISSION_CODE=23;
     SharedPreferences sharedpreferences;
     public static final String shownPermissionPage = "shownPermissionPage";
-    public static final String MyPREFERENCES = "MyPrefs" ;
+
+    public static final String shownInstallPermissionPage = "shownInstallPermissionPage";
+    public static final String MyPREFERENCES = "ACE_INSTALLER" ;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mContext = this;
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedpreferences.edit();
+
+        editor = sharedpreferences.edit();
 
 
 
@@ -72,8 +76,13 @@ public class MainActivity extends AppCompatActivity {
         installerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID);
-                startActivityForResult(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,uri),APP_UNKNOWN_SERVICES_ACCESS_REQUEST_CODE);
+                if(!sharedpreferences.getBoolean(shownInstallPermissionPage,false)) {
+                    Uri uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID);
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri), APP_UNKNOWN_SERVICES_ACCESS_REQUEST_CODE);
+                }else{
+                    Intent intent = new Intent(getApplicationContext(), InstallerActivity.class);
+                    startActivity(intent);
+                }
            //     openInstaller(v);
             }
         });
@@ -94,9 +103,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
     public void openInstaller(View view)
     {
         Intent intent = new Intent(getApplicationContext(), InstallerActivity.class);
@@ -109,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
 
         if(Build.VERSION.SDK_INT> 29) {
             if(!sharedpreferences.getBoolean(shownPermissionPage,false)) {
-                SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("shownPermissionPage", true);
                 editor.commit();
                 try {
@@ -117,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     Uri uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID);
                     Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri);
                     startActivityForResult(intent, APP_STORAGE_ACCESS_REQUEST_CODE);
+
                 } catch (Exception ex) {
                     Intent intent = new Intent();
                     intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
@@ -131,13 +137,14 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == APP_STORAGE_ACCESS_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("shownPermissionPage", true);
                 editor.commit();
             }
         } else if (requestCode == APP_UNKNOWN_SERVICES_ACCESS_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 {
+                    editor.putBoolean(shownInstallPermissionPage, true);
+                    editor.commit();
                     Intent intent = new Intent(getApplicationContext(), InstallerActivity.class);
                     startActivity(intent);
                 }
