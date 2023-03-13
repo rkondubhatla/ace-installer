@@ -165,7 +165,7 @@ public class InstallerActivity extends Activity {
 
     public void installSelected(View view)
     {
-       // installSelected.setEnabled(false);
+        installSelected.setEnabled(false);
 
         List<ApkFile> apkList = ((ApkViewDataAdapter) mAdapter).getSelectedApkList();
 
